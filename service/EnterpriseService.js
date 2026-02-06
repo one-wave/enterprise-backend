@@ -17,14 +17,19 @@ async function getResionCount() {
 
 async function postEnterpriseRegister(body) {
   // 필수값 체크 (없으면 실패)
-  if (!body?.companyName) return false;
+  if (!body?.companyName) {
+    return { success: false, companyId: null };
+  }
 
   const isExistCompany = await enterpriseRepository.getIsExist(body);
   if (isExistCompany) {
-    return false;
+    return { success: false, companyId: null };
   } else {
-    const ok = await enterpriseRepository.postEnterpriseRegister(body);
-    return !!ok;
+    const companyId = await enterpriseRepository.postEnterpriseRegister(body);
+    return {
+      success: !!companyId,
+      companyId: companyId ?? null,
+    };
   }
 }
 

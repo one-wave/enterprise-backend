@@ -43,7 +43,7 @@ async function postEnterpriseRegister(body) {
   const companyName = body?.companyName;
   const companyPhone = body?.companyPhone ?? null;
 
-  if (!companyName) return false;
+  if (!companyName) return null;
 
   try {
     const result = await pool.query(
@@ -51,10 +51,13 @@ async function postEnterpriseRegister(body) {
       [companyName, companyPhone]
     );
 
-    return result.rowCount === 1;
+    if (result.rowCount !== 1) return null;
+
+    // 생성된 UUID 반환
+    return result.rows[0].company_id;
   } catch (e) {
     // 중복/제약조건/DB에러 등은 실패로 처리
-    return false;
+    return null;
   }
 }
 

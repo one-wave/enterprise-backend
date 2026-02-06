@@ -13,7 +13,7 @@ router.get("/company/region", enterpriseController.getResionCount);
 
 router.post("/company/register", enterpriseController.postEnterpriseRegister);
 
-router.post("/company/job/register", enterpriseController.postEnterpriseJobsRegister);
+router.post("/company/job/register", enterpriseController.postEnterpriseRegister);
 
 module.exports = router;
 

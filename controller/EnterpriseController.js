@@ -48,10 +48,11 @@ exports.getResionCount = async (req, res, next) => {
 
 exports.postEnterpriseRegister = async (req, res, next) => {
     try {
-        const val = await enterpriseService.postEnterpriseRegister(req.body);
+        const { success, companyId } = await enterpriseService.postEnterpriseRegister(req.body);
 
         return res.status(201).json({
-            success: val,
+            success,
+            companyId,
         })
     } catch (e) {
         next(e);
