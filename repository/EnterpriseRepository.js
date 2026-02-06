@@ -38,8 +38,24 @@ async function getAllFromRegion() {
   return rows;
 }
 
-async function postEnterpriseRegister() {
-  //회원가입시 기업 없으면 추가
+async function postEnterpriseRegister(body) {
+  // 기업 등록 (company_name, company_phone)
+  const companyName = body?.companyName;
+  const companyPhone = body?.companyPhone ?? null;
+
+  if (!companyName) return false;
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO company (company_name, company_phone) VALUES ($1, $2) RETURNING company_id',
+      [companyName, companyPhone]
+    );
+
+    return result.rowCount === 1;
+  } catch (e) {
+    // 중복/제약조건/DB에러 등은 실패로 처리
+    return false;
+  }
 }
 
 async function postEnterpriseJobsRegister() {
@@ -53,6 +69,7 @@ module.exports = {
   getAllFromRegion,
   postEnterpriseRegister,
   getAllsCompany,
-  getIsExist
+  getIsExist,
+  postEnterpriseJobsRegister,
 };
 

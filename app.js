@@ -10,7 +10,7 @@ dotenv.config(); // env 제일 먼저 로드
 
 const app = express();
 
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
 
 const corsOptions = {
   origin: (origin, callback) => {

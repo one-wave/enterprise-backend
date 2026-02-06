@@ -57,3 +57,15 @@ exports.postEnterpriseRegister = async (req, res, next) => {
         next(e);
     }
 }
+
+exports.postEnterpriseJobsRegister = async (req, res, next) => {
+    try {
+        // 아직 구현되지 않은 API: 잘못된 라우팅으로 company/register가 호출되는 것 방지용
+        return res.status(501).json({
+            success: false,
+            message: "Not implemented",
+        });
+    } catch (e) {
+        next(e);
+    }
+}
