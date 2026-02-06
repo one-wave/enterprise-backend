@@ -84,6 +84,16 @@ async function createJobPost(data) {
 
   if (!company_id || !job_nm) return null;
 
+  // salary를 숫자로 변환 (문자열이면 숫자로, 없으면 0)
+  let salaryNum = 0;
+  if (salary !== null && salary !== undefined && salary !== "") {
+    if (typeof salary === "string") {
+      salaryNum = parseInt(salary.replace(/,/g, ""), 10) || 0;
+    } else {
+      salaryNum = Number(salary) || 0;
+    }
+  }
+
   const query = `
     INSERT INTO job_post (
       company_id, job_location, emp_type, enter_type,
@@ -103,21 +113,21 @@ async function createJobPost(data) {
 
   const values = [
     company_id,
-    job_location ?? null,
-    emp_type ?? null,
-    enter_type ?? null,
-    env_both_hands ?? null,
-    env_eye_sight ?? null,
-    env_hand_work ?? null,
-    env_lift_power ?? null,
-    env_lstn_talk ?? null,
-    env_stnd_walk ?? null,
+    job_location || null,
+    emp_type || null,
+    enter_type || null,
+    env_both_hands || null,
+    env_eye_sight || null,
+    env_hand_work || null,
+    env_lift_power || null,
+    env_lstn_talk || null,
+    env_stnd_walk || null,
     job_nm,
-    regagn_name ?? null,
-    req_career ?? null,
-    req_educ ?? null,
-    salary ?? 0,
-    salary_type ?? null,
+    regagn_name || null,
+    req_career || null,
+    req_educ || null,
+    salaryNum,
+    salary_type || null,
   ];
 
   try {
@@ -125,6 +135,9 @@ async function createJobPost(data) {
     if (result.rowCount !== 1) return null;
     return result.rows[0].job_post_id;
   } catch (e) {
+    console.error("[createJobPost] DB 에러:", e.message);
+    console.error("[createJobPost] 쿼리:", query);
+    console.error("[createJobPost] 값:", values);
     return null;
   }
 }
@@ -153,6 +166,16 @@ async function updateJobPost(data) {
 
   if (!job_post_id || !company_id) return false;
 
+  // salary를 숫자로 변환 (문자열이면 숫자로, 없으면 0)
+  let salaryNum = 0;
+  if (salary !== null && salary !== undefined && salary !== "") {
+    if (typeof salary === "string") {
+      salaryNum = parseInt(salary.replace(/,/g, ""), 10) || 0;
+    } else {
+      salaryNum = Number(salary) || 0;
+    }
+  }
+
   const query = `
     UPDATE job_post
     SET
@@ -178,27 +201,30 @@ async function updateJobPost(data) {
   const values = [
     job_post_id,
     company_id,
-    job_nm ?? null,
-    job_location ?? null,
-    emp_type ?? null,
-    enter_type ?? null,
-    salary ?? 0,
-    salary_type ?? null,
-    req_career ?? null,
-    req_educ ?? null,
-    regagn_name ?? null,
-    env_both_hands ?? null,
-    env_eye_sight ?? null,
-    env_hand_work ?? null,
-    env_lift_power ?? null,
-    env_lstn_talk ?? null,
-    env_stnd_walk ?? null,
+    job_nm || null,
+    job_location || null,
+    emp_type || null,
+    enter_type || null,
+    salaryNum,
+    salary_type || null,
+    req_career || null,
+    req_educ || null,
+    regagn_name || null,
+    env_both_hands || null,
+    env_eye_sight || null,
+    env_hand_work || null,
+    env_lift_power || null,
+    env_lstn_talk || null,
+    env_stnd_walk || null,
   ];
 
   try {
     const result = await pool.query(query, values);
     return result.rowCount === 1;
   } catch (e) {
+    console.error("[updateJobPost] DB 에러:", e.message);
+    console.error("[updateJobPost] 쿼리:", query);
+    console.error("[updateJobPost] 값:", values);
     return false;
   }
 }
