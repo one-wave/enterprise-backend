@@ -342,6 +342,41 @@ async function getJobPostApplications(jobPostId) {
   }
 }
 
+// 지원자 상태 업데이트
+async function updateApplicationStatus(applicationId, status) {
+  if (!applicationId || !status) return false;
+
+  // 허용된 상태 값 검증
+  const allowedStatuses = [
+    "서류 대기중",
+    "서류 검토중",
+    "서류 합격",
+    "서류 불합격",
+    "면접 예정",
+    "최종 합격",
+  ];
+
+  if (!allowedStatuses.includes(status)) {
+    throw new Error(`허용되지 않은 상태 값입니다: ${status}`);
+  }
+
+  const query = `
+    UPDATE job_post_application
+    SET status = $2
+    WHERE application_id = $1
+    RETURNING application_id
+  `;
+
+  try {
+    const result = await pool.query(query, [applicationId, status]);
+    return result.rowCount === 1;
+  } catch (e) {
+    console.error("[updateApplicationStatus] DB 에러:", e.message);
+    console.error("[updateApplicationStatus] 쿼리:", query);
+    throw new Error(`상태 업데이트 실패: ${e.message}`);
+  }
+}
+
 module.exports = {
   getAllFromTestDB,
   getAllFromCompanyDB,
@@ -352,5 +387,6 @@ module.exports = {
   createJobPost,
   updateJobPost,
   getJobPostApplications,
+  updateApplicationStatus,
 };
 

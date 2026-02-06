@@ -104,6 +104,35 @@ async function getJobPostApplications(jobPostId) {
   }
 }
 
+async function updateApplicationStatus(applicationId, status) {
+  try {
+    if (!applicationId) {
+      return {
+        success: false,
+        error: "applicationId가 필요합니다.",
+      };
+    }
+    if (!status) {
+      return {
+        success: false,
+        error: "status가 필요합니다.",
+      };
+    }
+
+    const updated = await enterpriseRepository.updateApplicationStatus(applicationId, status);
+    return {
+      success: updated,
+      error: updated ? null : "상태 업데이트에 실패했습니다.",
+    };
+  } catch (e) {
+    console.error("[updateApplicationStatus] 서비스 에러:", e.message);
+    return {
+      success: false,
+      error: e.message || "상태 업데이트 중 오류가 발생했습니다.",
+    };
+  }
+}
+
 module.exports = {
   getEnterpriseServiceData,
   getEnterpriseCompanyService,
@@ -113,4 +142,5 @@ module.exports = {
   updateCompanyJob,
   getAllsCompany,
   getJobPostApplications,
+  updateApplicationStatus,
 };

@@ -22,5 +22,8 @@ router.put("/company/job/:jobPostId", enterpriseController.putEnterpriseJob);
 // 특정 공고의 지원자 목록 조회
 router.get("/company/job/:jobPostId/applications", enterpriseController.getJobPostApplications);
 
+// 지원자 상태 업데이트
+router.patch("/company/application/:applicationId/status", enterpriseController.patchApplicationStatus);
+
 module.exports = router;
 

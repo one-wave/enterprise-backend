@@ -157,3 +157,44 @@ exports.getJobPostApplications = async (req, res, next) => {
         });
     }
 }
+
+exports.patchApplicationStatus = async (req, res, next) => {
+    try {
+        const applicationId = req.params.applicationId;
+        const { status } = req.body;
+
+        if (!applicationId) {
+            return res.status(400).json({
+                success: false,
+                message: "applicationId가 필요합니다.",
+            });
+        }
+
+        if (!status) {
+            return res.status(400).json({
+                success: false,
+                message: "status가 필요합니다.",
+            });
+        }
+
+        const { success, error } = await enterpriseService.updateApplicationStatus(applicationId, status);
+
+        if (!success) {
+            return res.status(400).json({
+                success: false,
+                message: error || "상태 업데이트에 실패했습니다.",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "상태가 업데이트되었습니다.",
+        });
+    } catch (e) {
+        console.error("[patchApplicationStatus] 예외 발생:", e);
+        return res.status(500).json({
+            success: false,
+            message: e.message || "서버 오류가 발생했습니다.",
+        });
+    }
+}
