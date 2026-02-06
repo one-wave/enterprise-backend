@@ -34,11 +34,37 @@ async function postEnterpriseRegister(body) {
 }
 
 async function createCompanyJob(body) {
-  const jobPostId = await enterpriseRepository.createJobPost(body);
-  return {
-    success: !!jobPostId,
-    jobPostId: jobPostId ?? null,
-  };
+  try {
+    // 필수 필드 검증
+    if (!body?.company_id) {
+      return {
+        success: false,
+        jobPostId: null,
+        error: "company_id가 필요합니다.",
+      };
+    }
+    if (!body?.job_nm) {
+      return {
+        success: false,
+        jobPostId: null,
+        error: "job_nm(공고 제목)이 필요합니다.",
+      };
+    }
+
+    const jobPostId = await enterpriseRepository.createJobPost(body);
+    return {
+      success: !!jobPostId,
+      jobPostId: jobPostId ?? null,
+      error: jobPostId ? null : "공고 생성에 실패했습니다.",
+    };
+  } catch (e) {
+    console.error("[createCompanyJob] 서비스 에러:", e.message);
+    return {
+      success: false,
+      jobPostId: null,
+      error: e.message || "공고 생성 중 오류가 발생했습니다.",
+    };
+  }
 }
 
 async function updateCompanyJob(body) {

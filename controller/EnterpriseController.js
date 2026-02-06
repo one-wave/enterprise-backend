@@ -61,26 +61,15 @@ exports.postEnterpriseRegister = async (req, res, next) => {
 
 exports.postEnterpriseJobsRegister = async (req, res, next) => {
     try {
-        // 필수 필드 검증
-        if (!req.body.company_id) {
-            return res.status(400).json({
-                success: false,
-                message: "company_id가 필요합니다.",
-            });
-        }
-        if (!req.body.job_nm) {
-            return res.status(400).json({
-                success: false,
-                message: "job_nm(공고 제목)이 필요합니다.",
-            });
-        }
+        console.log("[postEnterpriseJobsRegister] 요청 받음:", JSON.stringify(req.body, null, 2));
 
-        const { success, jobPostId } = await enterpriseService.createCompanyJob(req.body);
+        const { success, jobPostId, error } = await enterpriseService.createCompanyJob(req.body);
 
         if (!success) {
+            console.error("[postEnterpriseJobsRegister] 실패:", error);
             return res.status(400).json({
                 success: false,
-                message: "공고 생성에 실패했습니다. 입력값을 확인해주세요.",
+                message: error || "공고 생성에 실패했습니다. 입력값을 확인해주세요.",
             });
         }
 
@@ -89,8 +78,11 @@ exports.postEnterpriseJobsRegister = async (req, res, next) => {
             jobPostId,
         });
     } catch (e) {
-        console.error("[postEnterpriseJobsRegister] 에러:", e);
-        next(e);
+        console.error("[postEnterpriseJobsRegister] 예외 발생:", e);
+        return res.status(500).json({
+            success: false,
+            message: e.message || "서버 오류가 발생했습니다.",
+        });
     }
 }
 
