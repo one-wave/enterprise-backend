@@ -7,12 +7,15 @@ async function loginCompanyByAuthCode(authCode) {
     return { success: false, token: null, expiresAt: null };
   }
 
-  // TODO: 인증코드 검증 로직 추가 (예: company_auth 테이블 등)
-  // 지금은 코드 형식만 체크하고, 실제 검증은 추후 구현
-
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error("JWT_SECRET 이 .env에 설정되어 있지 않습니다.");
+  }
+
+  // 회사가 등록된 상태인지 확인 (없으면 로그인 실패)
+  const isRegister = await userRepository.isRegister(trimmed);
+  if (!isRegister) {
+    return { success: false, token: null, expiresAt: null };
   }
 
   const payload = {

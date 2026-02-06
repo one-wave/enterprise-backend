@@ -13,6 +13,20 @@ async function saveJwtToken({ userType, authCode, token, expiresAt }) {
   return result.rows[0];
 }
 
+async function isRegister(authCode) {
+  if (!authCode) return false;
+  const { rows } = await pool.query(
+      `SELECT EXISTS (
+        SELECT 1 FROM "company"
+        WHERE TRIM("company_id"::text) = TRIM($1)
+     ) AS "exists"`,
+      [authCode]
+  );
+  return rows[0].exists;
+}
+
+
 module.exports = {
   saveJwtToken,
+  isRegister
 };
