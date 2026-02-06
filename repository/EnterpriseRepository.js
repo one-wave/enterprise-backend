@@ -302,6 +302,45 @@ async function updateJobPost(data) {
 }
 
 
+// 특정 공고에 지원한 지원자 목록 조회
+async function getJobPostApplications(jobPostId) {
+  if (!jobPostId) return [];
+
+  const query = `
+    SELECT 
+      jpa.application_id,
+      jpa.job_post_id,
+      jpa.user_id,
+      jpa.resume_snapshot,
+      jpa.applied_at,
+      au.first_name,
+      au.last_name,
+      au.user_email_contact,
+      aui.env_both_hands,
+      aui.env_eye_sight,
+      aui.env_hand_work,
+      aui.env_lift_power,
+      aui.env_lstn_talk,
+      aui.env_stnd_walk,
+      aui.user_phone,
+      aui.birth_date
+    FROM job_post_application jpa
+    INNER JOIN applicant_user au ON jpa.user_id = au.user_id
+    LEFT JOIN applicant_user_info aui ON jpa.user_id = aui.user_id
+    WHERE jpa.job_post_id = $1
+    ORDER BY jpa.applied_at DESC
+  `;
+
+  try {
+    const { rows } = await pool.query(query, [jobPostId]);
+    return rows;
+  } catch (e) {
+    console.error("[getJobPostApplications] DB 에러:", e.message);
+    console.error("[getJobPostApplications] 쿼리:", query);
+    throw new Error(`지원자 목록 조회 실패: ${e.message}`);
+  }
+}
+
 module.exports = {
   getAllFromTestDB,
   getAllFromCompanyDB,
@@ -311,5 +350,6 @@ module.exports = {
   getIsExist,
   createJobPost,
   updateJobPost,
+  getJobPostApplications,
 };
 

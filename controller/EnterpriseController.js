@@ -121,3 +121,39 @@ exports.putEnterpriseJob = async (req, res, next) => {
         next(e);
     }
 }
+
+exports.getJobPostApplications = async (req, res, next) => {
+    try {
+        const jobPostId = req.params.jobPostId;
+        
+        if (!jobPostId) {
+            return res.status(400).json({
+                success: false,
+                message: "jobPostId가 필요합니다.",
+                data: [],
+            });
+        }
+
+        const { success, applications, error } = await enterpriseService.getJobPostApplications(jobPostId);
+
+        if (!success) {
+            return res.status(400).json({
+                success: false,
+                message: error || "지원자 목록 조회에 실패했습니다.",
+                data: [],
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: applications,
+        });
+    } catch (e) {
+        console.error("[getJobPostApplications] 예외 발생:", e);
+        return res.status(500).json({
+            success: false,
+            message: e.message || "서버 오류가 발생했습니다.",
+            data: [],
+        });
+    }
+}

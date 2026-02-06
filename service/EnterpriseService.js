@@ -79,6 +79,31 @@ async function getAllsCompany() {
   return rows;
 }
 
+async function getJobPostApplications(jobPostId) {
+  try {
+    if (!jobPostId) {
+      return {
+        success: false,
+        applications: [],
+        error: "jobPostId가 필요합니다.",
+      };
+    }
+
+    const applications = await enterpriseRepository.getJobPostApplications(jobPostId);
+    return {
+      success: true,
+      applications,
+    };
+  } catch (e) {
+    console.error("[getJobPostApplications] 서비스 에러:", e.message);
+    return {
+      success: false,
+      applications: [],
+      error: e.message || "지원자 목록 조회 중 오류가 발생했습니다.",
+    };
+  }
+}
+
 module.exports = {
   getEnterpriseServiceData,
   getEnterpriseCompanyService,
@@ -87,4 +112,5 @@ module.exports = {
   createCompanyJob,
   updateCompanyJob,
   getAllsCompany,
+  getJobPostApplications,
 };

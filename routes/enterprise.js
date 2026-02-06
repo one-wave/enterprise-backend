@@ -19,5 +19,8 @@ router.post("/company/job/register", enterpriseController.postEnterpriseJobsRegi
 // 회사 공고 수정 (UUID 기반)
 router.put("/company/job/:jobPostId", enterpriseController.putEnterpriseJob);
 
+// 특정 공고의 지원자 목록 조회
+router.get("/company/job/:jobPostId/applications", enterpriseController.getJobPostApplications);
+
 module.exports = router;
 
