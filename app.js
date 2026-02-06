@@ -25,7 +25,7 @@ const corsOptions = {
 
 // 라우터
 const indexRouter = require("./routes/index");
-const enterpriseRouter = require("./routes/enterPrise");
+const enterpriseRouter = require("./routes/enterprise");
 
 // 미들웨어
 app.use(logger("dev"));
