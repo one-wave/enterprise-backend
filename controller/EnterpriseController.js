@@ -61,10 +61,40 @@ exports.postEnterpriseRegister = async (req, res, next) => {
 
 exports.postEnterpriseJobsRegister = async (req, res, next) => {
     try {
-        // 아직 구현되지 않은 API: 잘못된 라우팅으로 company/register가 호출되는 것 방지용
-        return res.status(501).json({
-            success: false,
-            message: "Not implemented",
+        const { success, jobPostId } = await enterpriseService.createCompanyJob(req.body);
+
+        if (!success) {
+            return res.status(400).json({
+                success: false,
+                message: "공고 생성에 실패했습니다.",
+            });
+        }
+
+        return res.status(201).json({
+            success: true,
+            jobPostId,
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
+exports.putEnterpriseJob = async (req, res, next) => {
+    try {
+        const jobPostId = req.params.jobPostId;
+        const body = { ...req.body, job_post_id: jobPostId };
+
+        const { success } = await enterpriseService.updateCompanyJob(body);
+
+        if (!success) {
+            return res.status(400).json({
+                success: false,
+                message: "공고 수정에 실패했습니다.",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
         });
     } catch (e) {
         next(e);

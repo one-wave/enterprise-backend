@@ -13,7 +13,11 @@ router.get("/company/region", enterpriseController.getResionCount);
 
 router.post("/company/register", enterpriseController.postEnterpriseRegister);
 
-router.post("/company/job/register", enterpriseController.postEnterpriseRegister);
+// 회사 공고 생성
+router.post("/company/job/register", enterpriseController.postEnterpriseJobsRegister);
+
+// 회사 공고 수정 (UUID 기반)
+router.put("/company/job/:jobPostId", enterpriseController.putEnterpriseJob);
 
 module.exports = router;
 

@@ -33,6 +33,21 @@ async function postEnterpriseRegister(body) {
   }
 }
 
+async function createCompanyJob(body) {
+  const jobPostId = await enterpriseRepository.createJobPost(body);
+  return {
+    success: !!jobPostId,
+    jobPostId: jobPostId ?? null,
+  };
+}
+
+async function updateCompanyJob(body) {
+  const ok = await enterpriseRepository.updateJobPost(body);
+  return {
+    success: !!ok,
+  };
+}
+
 async function getAllsCompany() {
   const rows = await enterpriseRepository.getAllsCompany();
   return rows;
@@ -43,5 +58,7 @@ module.exports = {
   getEnterpriseCompanyService,
   getResionCount,
   postEnterpriseRegister,
-  getAllsCompany
+  createCompanyJob,
+  updateCompanyJob,
+  getAllsCompany,
 };
