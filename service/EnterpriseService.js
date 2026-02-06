@@ -15,8 +15,25 @@ async function getResionCount() {
   return rows;
 }
 
+async function postEnterpriseRegister(body) {
+  const isExistCompany = await enterpriseRepository.getIsExist(body);
+  if (isExistCompany) {
+    return false;
+  } else {
+    await enterpriseRepository.postEnterpriseRegister();
+    return true;
+  }
+}
+
+async function getAllsCompany() {
+  const rows = await enterpriseRepository.getAllsCompany();
+  return rows;
+}
+
 module.exports = {
   getEnterpriseServiceData,
   getEnterpriseCompanyService,
-  getResionCount
+  getResionCount,
+  postEnterpriseRegister,
+  getAllsCompany
 };

@@ -13,6 +13,17 @@ exports.getTestService = async (req, res, next) => {
     }
 };
 
+exports.getAllsCompany = async (req, res, next) => {
+    try {
+        const rows = await enterpriseService.getAllsCompany();
+        res.json({
+            data: rows
+        })
+    } catch (err) {
+        next(err);
+    }
+}
+
 exports.getEnterpriseCompanyService = async (req, res, next) => {
     try {
         const rows = await enterpriseService.getEnterpriseCompanyService();
@@ -32,5 +43,17 @@ exports.getResionCount = async (req, res, next) => {
         })
     } catch (err) {
         next(err);
+    }
+}
+
+exports.postEnterpriseRegister = async (req, res, next) => {
+    try {
+        const val = await enterpriseService.postEnterpriseRegister(req.body);
+
+        return res.status(201).json({
+            success: val,
+        })
+    } catch (e) {
+        next(e);
     }
 }
