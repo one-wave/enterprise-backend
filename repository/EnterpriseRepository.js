@@ -342,6 +342,47 @@ async function getJobPostApplications(jobPostId) {
   }
 }
 
+
+async function getAllApplications() {
+  const query = `
+    SELECT 
+      jpa.application_id,
+      jpa.job_post_id,
+      jpa.user_id,
+      jpa.resume_snapshot,
+      jpa.applied_at,
+      jpa.status,
+      au.first_name,
+      au.last_name,
+      au.user_email_contact,
+      aui.env_both_hands,
+      aui.env_eye_sight,
+      aui.env_hand_work,
+      aui.env_lift_power,
+      aui.env_lstn_talk,
+      aui.env_stnd_walk,
+      aui.user_phone,
+      aui.birth_date,
+      jp.job_nm,
+      c.company_name
+    FROM job_post_application jpa
+    INNER JOIN applicant_user au ON jpa.user_id = au.user_id
+    LEFT JOIN applicant_user_info aui ON jpa.user_id = aui.user_id
+    LEFT JOIN job_post jp ON jpa.job_post_id = jp.job_post_id
+    LEFT JOIN company c ON jp.company_id = c.company_id
+    ORDER BY jpa.applied_at DESC
+  `;
+
+  try {
+    const { rows } = await pool.query(query);
+    return rows;
+  } catch (e) {
+    console.error("[getAllApplications] DB 에러:", e.message);
+    console.error("[getAllApplications] 쿼리:", query);
+    throw new Error(`지원 내역 조회 실패: ${e.message}`);
+  }
+}
+
 // 지원자 상태 업데이트
 async function updateApplicationStatus(applicationId, status) {
   if (!applicationId || !status) return false;
@@ -387,6 +428,7 @@ module.exports = {
   createJobPost,
   updateJobPost,
   getJobPostApplications,
+  getAllApplications,
   updateApplicationStatus,
 };
 

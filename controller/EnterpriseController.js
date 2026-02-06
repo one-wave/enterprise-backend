@@ -158,6 +158,32 @@ exports.getJobPostApplications = async (req, res, next) => {
     }
 }
 
+exports.getAllApplications = async (req, res, next) => {
+    try {
+        const { success, applications, error } = await enterpriseService.getAllApplications();
+
+        if (!success) {
+            return res.status(400).json({
+                success: false,
+                message: error || "전체 지원 내역 조회에 실패했습니다.",
+                data: [],
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: applications,
+        });
+    } catch (e) {
+        console.error("[getAllApplications] 예외 발생:", e);
+        return res.status(500).json({
+            success: false,
+            message: e.message || "서버 오류가 발생했습니다.",
+            data: [],
+        });
+    }
+}
+
 exports.patchApplicationStatus = async (req, res, next) => {
     try {
         const applicationId = req.params.applicationId;

@@ -104,6 +104,23 @@ async function getJobPostApplications(jobPostId) {
   }
 }
 
+async function getAllApplications() {
+  try {
+    const applications = await enterpriseRepository.getAllApplications();
+    return {
+      success: true,
+      applications,
+    };
+  } catch (e) {
+    console.error("[getAllApplications] 서비스 에러:", e.message);
+    return {
+      success: false,
+      applications: [],
+      error: e.message || "전체 지원 내역 조회 중 오류가 발생했습니다.",
+    };
+  }
+}
+
 async function updateApplicationStatus(applicationId, status) {
   try {
     if (!applicationId) {
@@ -142,5 +159,6 @@ module.exports = {
   updateCompanyJob,
   getAllsCompany,
   getJobPostApplications,
+  getAllApplications,
   updateApplicationStatus,
 };
