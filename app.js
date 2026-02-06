@@ -10,15 +10,37 @@ dotenv.config(); // env 제일 먼저 로드
 
 const app = express();
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:5173", "http://34.64.188.189:3000"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://34.64.188.189",
+  "http://34.64.188.189:3000",
+  "http://34.64.188.189:4000",
+  "http://34.64.188.189:5173",
+];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // origin이 없으면 (같은 origin 요청, Postman 등) 허용
+    if (!origin) {
       callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+      return;
     }
+    
+    // 허용된 origin 목록에 있으면 허용
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    
+    // 34.64.188.189 도메인의 모든 포트 허용 (유연한 설정)
+    if (origin.startsWith("http://34.64.188.189:") || origin === "http://34.64.188.189") {
+      callback(null, true);
+      return;
+    }
+    
+    // 그 외는 거부
+    callback(new Error("Not allowed by CORS"));
   },
   credentials: false,
 };
