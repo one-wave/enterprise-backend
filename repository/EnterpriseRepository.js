@@ -313,6 +313,7 @@ async function getJobPostApplications(jobPostId) {
       jpa.user_id,
       jpa.resume_snapshot,
       jpa.applied_at,
+      jpa.status,
       au.first_name,
       au.last_name,
       au.user_email_contact,
